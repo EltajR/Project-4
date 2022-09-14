@@ -13,15 +13,18 @@ char *read_input(void);
 int determine_type_of_char(char c);
 tuple counter (char *user_input);
 int determine_readability (int w_per_100_l , int s_per_100_l);
+float per_100 (int , int );
 void output_grade (int readability_level);
 
 
 
 
 int main(void){
-
     char *user_input = read_input();
     tuple container = counter(user_input);
+    float letters_per_100_words = per_100(container.letter_counter, container.word_counter);
+    float sentences_per_100_words = per_100(container.sentence_counter, container.word_counter);
+    printf("%f, %f\n",letters_per_100_words, sentences_per_100_words);
     printf("%s: %i\n", "Letter count", container.letter_counter);
     printf("%s: %i\n", "Word count", container.word_counter);
     printf("%s: %i\n", "Sentence count", container.sentence_counter);
@@ -63,5 +66,10 @@ int determine_type_of_char(char c){
     else if ((c == '.') || (c == '?') || (c == '!')) return 3;
     // if it is anything else, return 0 -- not interested in that!
     else return 0;
+}
+
+float per_100(int number, int divided_by){
+    return number/(float)divided_by * 100;
+
 }
 
