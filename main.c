@@ -25,6 +25,7 @@ int main(void){
     float sentences_per_100_words = per_100_words(container.sentence_counter, container.word_counter);
     int grade = determine_readability(letters_per_100_words, sentences_per_100_words);
     output_grade(grade);
+    free(user_input);
     }
 }
 
