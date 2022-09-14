@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 
 typedef struct tuple {
@@ -9,34 +10,31 @@ typedef struct tuple {
     int sentence_counter;
 } tuple;
 
-char *read_input(void);
+char *read_input(char *output_to_user);
 int determine_type_of_char(char c);
 tuple counter (char *user_input);
-int determine_readability (int w_per_100_l , int s_per_100_l);
-float per_100 (int , int );
-void output_grade (int readability_level);
-
-
-
+int determine_readability (float l_per_100_words , float s_per_100_words);
+float per_100_words (int sentences_or_letters, int words);
+void output_grade (int grade);
 
 int main(void){
-    char *user_input = read_input();
+    while (1){
+    char *user_input = read_input("Text:");
     tuple container = counter(user_input);
-    float letters_per_100_words = per_100(container.letter_counter, container.word_counter);
-    float sentences_per_100_words = per_100(container.sentence_counter, container.word_counter);
-    printf("%f, %f\n",letters_per_100_words, sentences_per_100_words);
-    printf("%s: %i\n", "Letter count", container.letter_counter);
-    printf("%s: %i\n", "Word count", container.word_counter);
-    printf("%s: %i\n", "Sentence count", container.sentence_counter);
+    float letters_per_100_words = per_100_words(container.letter_counter, container.word_counter);
+    float sentences_per_100_words = per_100_words(container.sentence_counter, container.word_counter);
+    int grade = determine_readability(letters_per_100_words, sentences_per_100_words);
+    output_grade(grade);
+    }
 }
 
-char *read_input(void){
+char *read_input(char *output_to_user){
+    printf("%s", output_to_user);
     char *user_input = malloc(512 * sizeof(char));
     scanf(" %[^\n]",user_input);
     return user_input;
 }
 
-// What if there is one word and no space around it? -- Possible Error!
 tuple counter(char *user_input){
     tuple counter_tuple;
     counter_tuple.letter_counter = 0;
@@ -68,8 +66,16 @@ int determine_type_of_char(char c){
     else return 0;
 }
 
-float per_100(int number, int divided_by){
-    return number/(float)divided_by * 100;
+float per_100_words(int sentences_or_letters, int words){ return sentences_or_letters/(float)words * 100; }
 
+int determine_readability (float l_per_100_words , float s_per_100_words){
+    float grade = 0.0588 * l_per_100_words - 0.296 * s_per_100_words - 15.8;
+    return (int)roundf(grade);
+}
+
+void output_grade (int grade){
+    if(grade >= 1 && grade < 16) printf("%s %i\n", "Grade", grade);
+    else if(grade < 1) printf("%s\n", "Before grade 1");
+    else printf("%s\n", "Grade 16+");
 }
 
